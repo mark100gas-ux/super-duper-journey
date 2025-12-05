@@ -51,7 +51,7 @@ html, body {
 
 /* Login box */
 .login-box {
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0);
   padding: 24px 24px; /* reduced padding */
   border-radius: 12px;
   box-shadow: 0 6px 18px rgba(0,0,0,0.1);
@@ -153,4 +153,48 @@ html, body {
 .input-group input:focus {
   border-color: #555;
   outline: none;
+}
+/* ================================
+   LOADING ANIMATION
+================================ */
+.loading {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 20;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.loading img {
+  width: 70px;
+  height: 70px;
+  margin-bottom: 12px;
+  animation: spin 1.2s linear infinite;
+  border-radius: 8px;
+}
+
+/* SHAKE ANIMATION */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-10px); }
+  40% { transform: translateX(10px); }
+  60% { transform: translateX(-8px); }
+  80% { transform: translateX(8px); }
+  100% { transform: translateX(0); }
+}
+.login-content.shake {
+  animation: shake 0.4s;
+}
+
+/* Start with login box hidden */
+.login-box {
+  display: none;        /* <-- Important: hide until loading is done */
+  opacity: 0;           /* For fade-in */
+  transition: opacity 0.4s ease;
 }
